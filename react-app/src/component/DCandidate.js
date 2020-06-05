@@ -6,7 +6,8 @@ import { Grid,Paper, TableContainer, Table, TableHead, TableRow, TableCell, Tabl
 import EditIcon from '@material-ui/icons/Edit'
 import DeleteIcon from '@material-ui/icons/Delete'
 
-import DCandidateForm from './DCandidateForm'
+import DCandidateForm from './DCandidateForm';
+import{useToasts} from'react-toast-notifications' //notification msg display kirimata
 
 const style=()=>({
 root:{
@@ -35,6 +36,17 @@ const [currentId,setCurrentId]=useState(0);
         props.fetchAllCandidate()
     },[])
      console.log(props.dCandidateList)
+
+  //Toast msg
+  const {addToast}=useToasts();
+  
+     const onDelete=(id)=>{
+       
+        if(window.confirm('Are you sure to delete this record? '))
+        {
+            props.deleteCandidate(id,()=>addToast("Deleted successfully",{appearance:'info'}))
+        }
+     }
 
     return(
         // add more shading(shadow) use elevation property like this
@@ -69,7 +81,9 @@ const [currentId,setCurrentId]=useState(0);
                                                  <Button><EditIcon 
                                                   onClick={()=>{setCurrentId(record.id)}}     
                                                  color='primary'/></Button>   
-                                                 <Button><DeleteIcon color='secondary'/></Button>
+                                                 <Button><DeleteIcon color='secondary'
+                                                 onClick={()=>onDelete(record.id)}
+                                                 /></Button>
                                         {/* // material UI icon import above */}
 
                                              </ButtonGroup>
@@ -97,7 +111,8 @@ const mapStateToProps=state=>{
 }
 
 const mapActionProps={
-    fetchAllCandidate:actions.fetchALL
+    fetchAllCandidate:actions.fetchALL,
+    deleteCandidate:actions.Delete
 }
 
 export default connect(mapStateToProps,mapActionProps)(withStyles(style)(DCandidates));
